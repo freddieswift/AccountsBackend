@@ -1,8 +1,7 @@
 const express = require('express')
-const Account = require('../models/account')
-const Category = require('../models/category')
 const Year = require('../models/year')
 const auth = require('../middleware/auth')
+const { findOne } = require('../models/category')
 
 const router = new express.Router()
 
@@ -34,8 +33,26 @@ router.get('/year', auth, async (req, res, next) => {
         })
 
         res.send({ years: formattedYears })
+    }
+    catch (error) {
+        next(error)
+    }
+})
 
+router.get('/year/:id', auth, async (req, res, next) => {
+    const accountId = req.account._id
+    const yearId = req.params.id
+    try {
+        const year = await Year.findOne({
+            accountId,
+            _id: yearId
+        })
+            .populate('categories')
 
+        if (!year) {
+            return res.status(404).send({ error: "Cannot find year" })
+        }
+        res.send(year)
     }
     catch (error) {
         next(error)
@@ -43,10 +60,10 @@ router.get('/year', auth, async (req, res, next) => {
 })
 
 router.delete('/year/:id', auth, async (req, res) => {
-    const _id = req.params.id
-
+    const yearId = req.params.id
+    const accountId = req.account._id
     try {
-        const year = await Year.findOneAndDelete({ _id, accountId: req.account._id })
+        const year = await Year.findOneAndDelete({ _id: yearId, accountId: accountId })
         if (!year) {
             return res.status(404).send()
         }
@@ -54,6 +71,41 @@ router.delete('/year/:id', auth, async (req, res) => {
     }
     catch (error) {
         res.status(500).send({ error: "Something went wrong, please try again later..." })
+    }
+})
+
+router.patch('/year/:id', auth, async (req, res) => {
+    const yearId = req.params.id
+    const accountId = req.account._id
+
+    const updates = Object.keys(req.body)
+    let allowedUpdates = Object.keys(Year.schema.paths)
+    allowedUpdates = allowedUpdates.filter(item => item != '_id')
+
+    const isValidOperation = updates.every((update) => {
+        return allowedUpdates.includes(update)
+    })
+    if (!isValidOperation) {
+        return res.status(400).send({ error: 'Invalid Updates' })
+    }
+
+    try {
+        const year = await Year.findOne({ _id: yearId })
+
+        if (!year) {
+            return res.status(404).send({ error: "Cannot find year" })
+        }
+
+        updates.forEach((update) => {
+            year[update] = req.body[update]
+        })
+
+        await year.save()
+
+        res.send()
+    }
+    catch (error) {
+        res.status(500).send(error)
     }
 })
 

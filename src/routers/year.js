@@ -2,6 +2,7 @@ const express = require('express')
 const Year = require('../models/year')
 const auth = require('../middleware/auth')
 const { findOne } = require('../models/category')
+const Category = require('../models/category')
 
 const router = new express.Router()
 
@@ -94,6 +95,13 @@ router.patch('/year/:id', auth, async (req, res) => {
 
         if (!year) {
             return res.status(404).send({ error: "Cannot find year" })
+        }
+
+        for (const category of req.body['categories']) {
+            const foundCategory = await Category.findOne({ _id: category })
+            if (!foundCategory) {
+                return (res.status(404).send({ error: "Unable to create category against year. Please save the category first" }))
+            }
         }
 
         updates.forEach((update) => {

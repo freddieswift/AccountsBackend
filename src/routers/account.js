@@ -1,6 +1,6 @@
 const express = require('express')
 const Account = require('../models/account')
-
+const auth = require('../middleware/auth')
 const router = new express.Router()
 
 //create account
@@ -35,8 +35,24 @@ router.post('/account/login', async (req, res, next) => {
     }
 })
 
-router.post('/account/logout', async (req, res) => {
-
+router.post('/account/logout', auth, async (req, res) => {
+    const currentToken = req.token
+    const account = req.account
+    try {
+        const updatedTokens = []
+        account.tokens.forEach(token => {
+            if (token.token !== currentToken) {
+                updatedTokens.push(token)
+            }
+        })
+        account.tokens = updatedTokens
+        await account.save()
+        res.send()
+    }
+    catch (error) {
+        console.log(error)
+        res.send(error)
+    }
 })
 
 module.exports = router

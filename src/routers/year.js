@@ -77,7 +77,6 @@ router.delete('/year/:id', auth, async (req, res) => {
 
 router.patch('/year/:id', auth, async (req, res) => {
     const yearId = req.params.id
-    const accountId = req.account._id
 
     const updates = Object.keys(req.body)
     let allowedUpdates = Object.keys(Year.schema.paths)

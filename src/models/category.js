@@ -13,7 +13,12 @@ const categorySchema = new mongoose.Schema({
     value: {
         type: Number,
         default: null
-    }
+    },
+    accountId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Account',
+        required: true
+    },
 })
 
 const Category = mongoose.model('Category', categorySchema)

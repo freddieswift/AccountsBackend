@@ -51,9 +51,19 @@ router.delete('/category/:id', auth, async (req, res) => {
 
     try {
         const category = await Category.findOneAndDelete({ _id: categoryId })
+
         if (!category) {
             return res.status(404).send()
         }
+
+        const year = await Year.findOne({ categories: category._id })
+
+        if (year) {
+            const updatedYearCategories = year
+        }
+
+
+
         res.send(category)
     }
     catch (error) {

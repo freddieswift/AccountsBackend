@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const categorySchema = require('../models/category')
 
 const yearSchema = new mongoose.Schema({
     name: {
@@ -15,10 +16,7 @@ const yearSchema = new mongoose.Schema({
         ref: 'Account',
         required: true
     },
-    categories: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category'
-    }]
+    categories: [categorySchema]
 })
 
 const Year = mongoose.model('Year', yearSchema)

@@ -80,7 +80,7 @@ router.patch('/year/:id', auth, async (req, res, next) => {
 
     const updates = Object.keys(req.body)
     let allowedUpdates = Object.keys(Year.schema.paths)
-    allowedUpdates = allowedUpdates.filter(item => item != '_id')
+    allowedUpdates = allowedUpdates.filter(item => item != '_id' && item != 'totalCOS' && item != 'totalOH')
 
     const isValidOperation = updates.every((update) => {
         return allowedUpdates.includes(update)

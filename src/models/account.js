@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Category = require('./category')
 const jwt = require('jsonwebtoken')
+require('dotenv').config()
 
 const accountSchema = new mongoose.Schema({
     name: {
@@ -31,7 +32,7 @@ const accountSchema = new mongoose.Schema({
 accountSchema.methods.generateAuthToken = async function () {
     try {
         const account = this
-        const token = jwt.sign({ _id: account._id.toString() }, "freddie")
+        const token = jwt.sign({ _id: account._id.toString() }, process.env.JWT_SECRET)
         account.tokens = account.tokens.concat({ token })
         await account.save()
         return token

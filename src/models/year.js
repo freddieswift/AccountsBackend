@@ -24,7 +24,15 @@ const yearSchema = new mongoose.Schema({
         ref: 'Account',
         required: true
     },
-    categories: [categorySchema]
+    categories: [categorySchema],
+    totalCOS: {
+        type: Number,
+        default: 0
+    },
+    totalOH: {
+        type: Number,
+        default: 0
+    }
 })
 
 const Year = mongoose.model('Year', yearSchema)

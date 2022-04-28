@@ -1,5 +1,6 @@
 const express = require('express')
 const Account = require('../models/account')
+const { generateCustomError } = require('../errors/customError')
 const auth = require('../middleware/auth')
 const router = new express.Router()
 
@@ -23,7 +24,7 @@ router.post('/account/login', async (req, res, next) => {
         const account = await Account.findOne({ username })
 
         if (!account || password !== account.password) {
-            return res.status(400).send({ error: "Invalid credentials" })
+            return next(generateCustomError("Invalid credentials", 400))
         }
 
         const token = await account.generateAuthToken()
@@ -35,7 +36,7 @@ router.post('/account/login', async (req, res, next) => {
     }
 })
 
-router.post('/account/logout', auth, async (req, res) => {
+router.post('/account/logout', auth, async (req, res, next) => {
     const currentToken = req.token
     const account = req.account
     try {
@@ -50,8 +51,7 @@ router.post('/account/logout', auth, async (req, res) => {
         res.send()
     }
     catch (error) {
-        console.log(error)
-        res.send(error)
+        res.next(error)
     }
 })
 

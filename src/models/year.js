@@ -11,6 +11,14 @@ const yearSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    predictedSocks: {
+        type: Number,
+        default: 0
+    },
+    active: {
+        type: Boolean,
+        default: false
+    },
     accountId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Account',

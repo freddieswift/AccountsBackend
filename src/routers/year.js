@@ -1,10 +1,10 @@
 const express = require('express')
 const Year = require('../models/year')
 const auth = require('../middleware/auth')
-
+const { generateCustomError } = require('../errors/customError')
 const router = new express.Router()
 
-router.post('/year', auth, async (req, res) => {
+router.post('/year', auth, async (req, res, next) => {
     const year = new Year(req.body)
     year.accountId = req.account._id
     try {
@@ -12,7 +12,7 @@ router.post('/year', auth, async (req, res) => {
         res.status(201).send(year)
     }
     catch (error) {
-        res.send(error)
+        next(error)
     }
 })
 
@@ -20,6 +20,7 @@ router.post('/year', auth, async (req, res) => {
 router.get('/year', auth, async (req, res, next) => {
     const accountId = req.account._id
     try {
+
         const years = await Year.find({
             "accountId": accountId
         })
@@ -49,7 +50,23 @@ router.get('/year/:id', auth, async (req, res, next) => {
             .populate('categories')
 
         if (!year) {
-            return res.status(404).send({ error: "Cannot find year" })
+            return next(generateCustomError("Year does not exist", 404))
+        }
+
+        res.send(year)
+    }
+    catch (error) {
+        next(error)
+    }
+})
+
+router.delete('/year/:id', auth, async (req, res, next) => {
+    const yearId = req.params.id
+    const accountId = req.account._id
+    try {
+        const year = await Year.findOneAndDelete({ _id: yearId, accountId: accountId })
+        if (!year) {
+            return next(generateCustomError("Year does not exist", 404))
         }
         res.send(year)
     }
@@ -58,22 +75,7 @@ router.get('/year/:id', auth, async (req, res, next) => {
     }
 })
 
-router.delete('/year/:id', auth, async (req, res) => {
-    const yearId = req.params.id
-    const accountId = req.account._id
-    try {
-        const year = await Year.findOneAndDelete({ _id: yearId, accountId: accountId })
-        if (!year) {
-            return res.status(404).send()
-        }
-        res.send(year)
-    }
-    catch (error) {
-        res.status(500).send({ error: "Something went wrong, please try again later..." })
-    }
-})
-
-router.patch('/year/:id', auth, async (req, res) => {
+router.patch('/year/:id', auth, async (req, res, next) => {
     const yearId = req.params.id
 
     const updates = Object.keys(req.body)
@@ -83,15 +85,16 @@ router.patch('/year/:id', auth, async (req, res) => {
     const isValidOperation = updates.every((update) => {
         return allowedUpdates.includes(update)
     })
+
     if (!isValidOperation) {
-        return res.status(400).send({ error: 'Invalid Updates' })
+        return next(generateCustomError("Invalid updates", 400))
     }
 
     try {
         const year = await Year.findOne({ _id: yearId })
 
         if (!year) {
-            return res.status(404).send({ error: "Cannot find year" })
+            return next(generateCustomError("Cannot find year", 404))
         }
 
         updates.forEach((update) => {
@@ -100,11 +103,10 @@ router.patch('/year/:id', auth, async (req, res) => {
 
         await year.save()
 
-        res.send()
+        res.send(year)
     }
     catch (error) {
-        console.log(error)
-        res.status(500).send(error)
+        next(error)
     }
 })
 

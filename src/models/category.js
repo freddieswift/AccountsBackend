@@ -8,7 +8,7 @@ const categorySchema = new mongoose.Schema({
     categoryType: {
         type: String,
         required: true,
-        enum: ['COS', 'OVERHEAD']
+        enum: ['COS', 'OVERHEAD', 'OI']
     },
     value: {
         type: Number,

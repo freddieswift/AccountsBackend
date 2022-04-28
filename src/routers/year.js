@@ -103,6 +103,8 @@ router.patch('/year/:id', auth, async (req, res, next) => {
 
         await year.save()
 
+        await year.calculateTotalCOSOH()
+
         res.send(year)
     }
     catch (error) {

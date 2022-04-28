@@ -35,6 +35,23 @@ const yearSchema = new mongoose.Schema({
     }
 })
 
+yearSchema.methods.calculateTotalCOSOH = async function () {
+    let totalCOS = 0
+    let totalOH = 0
+    this.categories.forEach(category => {
+        if (category.categoryType === 'COS') {
+            totalCOS += category.value
+        }
+        else {
+            totalOH += category.value
+        }
+    });
+    this.totalCOS = totalCOS
+    this.totalOH = totalOH
+
+    await this.save()
+}
+
 const Year = mongoose.model('Year', yearSchema)
 
 module.exports = Year

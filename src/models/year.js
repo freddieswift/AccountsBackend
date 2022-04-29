@@ -11,7 +11,7 @@ const yearSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
-    predictedSocks: {
+    predictedDozens: {
         type: Number,
         default: 0
     },
@@ -32,6 +32,10 @@ const yearSchema = new mongoose.Schema({
     totalOH: {
         type: Number,
         default: 0
+    },
+    COSOHPerDozen: {
+        type: Number,
+        default: 0
     }
 })
 
@@ -46,8 +50,16 @@ yearSchema.methods.calculateTotalCOSOH = async function () {
             totalOH += category.value
         }
     });
+
     this.totalCOS = totalCOS
     this.totalOH = totalOH
+
+    if (this.predictedDozens != 0) {
+        this.COSOHPerDozen = (this.totalCOS + this.totalOH) / this.predictedDozens
+    }
+    else {
+        this.COSOHPerDozen = 0
+    }
 
     await this.save()
 }

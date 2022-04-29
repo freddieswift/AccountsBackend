@@ -6,6 +6,7 @@ const router = new express.Router()
 
 router.post('/year', auth, async (req, res, next) => {
     const year = new Year(req.body)
+    console.log(year)
     year.accountId = req.account._id
     try {
         await year.save()

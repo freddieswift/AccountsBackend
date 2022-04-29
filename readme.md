@@ -11,3 +11,6 @@ At present, he does not have a way of using this data to find out how much each 
 The aim of this project is to: 
 - Create a web app to use instead of a spreadsheet. The web app should have all the same functionality as the spreadsheet. 
 - Extend the application to use the data provided to calculate the manufacturing costs per sock
+
+## API
+This is the repo for the back end of this project. I decided to create a REST API using node.js and express and to store data in a MongoDB database

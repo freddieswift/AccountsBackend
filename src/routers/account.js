@@ -1,8 +1,10 @@
 const express = require('express')
 const Account = require('../models/account')
+const Year = require('../models/year')
 const { generateCustomError } = require('../errors/customError')
 const auth = require('../middleware/auth')
 const router = new express.Router()
+
 
 //create account
 router.post('/account', async (req, res, next) => {
@@ -52,6 +54,29 @@ router.post('/account/logout', auth, async (req, res, next) => {
     }
     catch (error) {
         res.next(error)
+    }
+})
+
+router.delete('/account', auth, async (req, res, next) => {
+    // get account id from auth
+    const account = req.account
+    // get password from body
+    const password = req.body.password
+
+    try {
+
+        if (account.password != password) {
+            return next(generateCustomError("Invalid Credentials", 400))
+        }
+
+        await account.delete()
+
+        await Year.deleteMany({ accountId: account._id })
+
+        res.send()
+    }
+    catch (error) {
+        next(error)
     }
 })
 

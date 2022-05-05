@@ -6,7 +6,6 @@ const router = new express.Router()
 
 router.post('/year', auth, async (req, res, next) => {
     const year = new Year(req.body)
-    console.log(year)
     year.accountId = req.account._id
     try {
         await year.save()
@@ -92,6 +91,16 @@ router.patch('/year/:id', auth, async (req, res, next) => {
     }
 
     try {
+
+        // if the user is updating the year to be active, check if there is already an active year
+        // cannot be 2 active years
+        if (req.body.active === true) {
+            const activeYear = await Year.findOne({ active: true })
+            if (activeYear && activeYear._id != yearId) {
+                return next(generateCustomError("Unable to set year as active year. Only one year can be active", 400))
+            }
+        }
+
         const year = await Year.findOne({ _id: yearId })
 
         if (!year) {

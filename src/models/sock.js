@@ -12,6 +12,11 @@ const sockSchema = new mongoose.Schema({
     dyeCostPerDozen: {
         type: Number,
         defualt: 0
+    },
+    accountId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Account',
+        required: true
     }
 })
 

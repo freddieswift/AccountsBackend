@@ -12,6 +12,7 @@ const port = process.env.PORT || 3000
 //accept json in request body
 app.use(express.json())
 
+
 app.use(cors())
 
 //set up routers

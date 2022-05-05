@@ -39,6 +39,26 @@ router.get('/year', auth, async (req, res, next) => {
     }
 })
 
+router.get('/year/active', auth, async (req, res, next) => {
+    const accountId = req.account._id
+
+    try {
+        const year = await Year.findOne({
+            accountId,
+            active: true
+        })
+
+        if (!year) {
+            return next(generateCustomError("No active year found", 404))
+        }
+
+        res.send(year)
+    }
+    catch (error) {
+        next(error)
+    }
+})
+
 router.get('/year/:id', auth, async (req, res, next) => {
     const accountId = req.account._id
     const yearId = req.params.id

@@ -40,8 +40,8 @@ router.get('/sock/:id', auth, async (req, res, next) => {
         next(error)
     }
 })
-// get all socks
 
+// get all socks
 router.get('/sock', auth, async (req, res, next) => {
     const accountId = req.account._id
 
@@ -57,6 +57,27 @@ router.get('/sock', auth, async (req, res, next) => {
     }
 })
 //update sock by id
+
 //delete sock by id
+router.delete('/sock/:id', auth, async (req, res, next) => {
+    const accountId = req.account._id
+    const sockId = req.params.id
+
+    console.log(sockId)
+    console.log(accountId)
+    try {
+        const sock = await Sock.findOneAndDelete({ _id: sockId, accountId })
+
+        if (!sock) {
+            return next(generateCustomError("Cannot find sock", 404))
+        }
+
+        res.send(sock)
+    }
+    catch (error) {
+        next(error)
+    }
+})
+
 
 module.exports = router

@@ -9,9 +9,9 @@ const sockSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    dyeCostPerDozen: {
+    dyePerDozen: {
         type: Number,
-        defualt: 0
+        default: 0
     },
     accountId: {
         type: mongoose.Schema.Types.ObjectId,

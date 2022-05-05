@@ -4,6 +4,7 @@ require('./db/mongoose.js')
 
 const yearRouter = require('./routers/year')
 const accountRouter = require('./routers/account')
+const sockRouter = require('./routers/sock')
 const errorHandler = require('./middleware/errorHandler')
 
 const app = express()
@@ -18,6 +19,7 @@ app.use(cors())
 //set up routers
 app.use(yearRouter)
 app.use(accountRouter)
+app.use(sockRouter)
 app.use(errorHandler)
 
 //start server

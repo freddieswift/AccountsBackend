@@ -33,7 +33,6 @@ router.get('/sock/:id', auth, async (req, res, next) => {
             return next(generateCustomError("No sock found", 404))
         }
 
-        console.log(sock)
         res.send(sock)
     }
     catch (error) {
@@ -56,6 +55,7 @@ router.get('/sock', auth, async (req, res, next) => {
         next(error)
     }
 })
+
 //update sock by id
 router.patch('/sock/:id', auth, async (req, res, next) => {
     const sockId = req.params.id
@@ -110,6 +110,5 @@ router.delete('/sock/:id', auth, async (req, res, next) => {
         next(error)
     }
 })
-
 
 module.exports = router

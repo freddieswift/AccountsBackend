@@ -31,7 +31,7 @@ router.post('/account/login', async (req, res, next) => {
 
         const token = await account.generateAuthToken()
 
-        res.status(200).send({ token })
+        res.status(200).send({ account, token })
     }
     catch (error) {
         next(error)

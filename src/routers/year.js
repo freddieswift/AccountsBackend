@@ -32,7 +32,7 @@ router.get('/year', auth, async (req, res, next) => {
             }
         })
 
-        res.send({ years: formattedYears })
+        res.send(formattedYears)
     }
     catch (error) {
         next(error)
@@ -97,10 +97,11 @@ router.delete('/year/:id', auth, async (req, res, next) => {
 
 router.patch('/year/:id', auth, async (req, res, next) => {
     const yearId = req.params.id
+    const accountId = req.account._id
 
     const updates = Object.keys(req.body)
     let allowedUpdates = Object.keys(Year.schema.paths)
-    allowedUpdates = allowedUpdates.filter(item != 'totalCOS' && item != 'totalOH')
+    allowedUpdates = allowedUpdates.filter(item => item != 'totalCOS' && item != 'totalOH')
 
     const isValidOperation = updates.every((update) => {
         return allowedUpdates.includes(update)
@@ -115,13 +116,13 @@ router.patch('/year/:id', auth, async (req, res, next) => {
         // if the user is updating the year to be active, check if there is already an active year
         // cannot be 2 active years
         if (req.body.active === true) {
-            const activeYear = await Year.findOne({ active: true })
+            const activeYear = await Year.findOne({ active: true, accountId })
             if (activeYear && activeYear._id != yearId) {
                 return next(generateCustomError("Unable to set year as active year. Only one year can be active", 400))
             }
         }
 
-        const year = await Year.findOne({ _id: yearId })
+        const year = await Year.findOne({ _id: yearId, accountId })
 
         if (!year) {
             return next(generateCustomError("Cannot find year", 404))

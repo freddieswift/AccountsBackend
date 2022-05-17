@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+
 require('./db/mongoose.js')
 
 const yearRouter = require('./routers/year')
@@ -12,7 +13,6 @@ const port = process.env.PORT || 3000
 
 //accept json in request body
 app.use(express.json())
-
 
 app.use(cors({ origin: 'http://localhost:3001' }))
 

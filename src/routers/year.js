@@ -4,7 +4,7 @@ const router = new express.Router()
 
 const {
     createYear,
-    getListOfYears,
+    getAllYears,
     getActiveYear,
     getYearByID,
     deleteYear,
@@ -12,7 +12,7 @@ const {
 } = require('../controllers/year')
 
 router.post('/year', auth, createYear)
-router.get('/year', auth, getListOfYears)
+router.get('/year', auth, getAllYears)
 router.get('/year/active', auth, getActiveYear)
 router.get('/year/:id', auth, getYearByID)
 router.delete('/year/:id', auth, deleteYear)

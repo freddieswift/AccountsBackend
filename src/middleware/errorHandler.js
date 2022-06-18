@@ -3,11 +3,22 @@ const { CustomError } = require('../errors/customError')
 const errorHandler = (err, req, res, next) => {
     console.log(err)
 
+    const defaultError = {
+        statusCode: 500,
+        message: "Something went wrong, please try again later..."
+    }
+
     if (err instanceof CustomError) {
         return res.status(err.code).send({ error: err.message })
     }
+    if (err.name === "ValidationError") {
+        defaultError.statusCode = 400
+        defaultError.message = Object.keys(err.errors)
+            .map((item) => { return `${item} is required` })
+            .join(', ')
+    }
 
-    res.status(500).send({ error: "Something went wrong, please try again later..." })
+    res.status(defaultError.statusCode).send({ error: defaultError.message })
 }
 
 module.exports = errorHandler

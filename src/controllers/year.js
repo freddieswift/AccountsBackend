@@ -13,19 +13,20 @@ const createYear = async (req, res, next) => {
     }
 }
 
-const getListOfYears = async (req, res, next) => {
+const getAllYears = async (req, res, next) => {
     const accountId = req.account._id
     try {
         const years = await Year.find({
             "accountId": accountId
         })
-        const formattedYears = years.map((year) => {
-            return {
-                _id: year._id,
-                year: year.name
-            }
-        })
-        res.send(formattedYears)
+        // const formattedYears = years.map((year) => {
+        //     return {
+        //         _id: year._id,
+        //         name: year.name,
+        //         turnover: year.turn
+        //     }
+        // })
+        res.send(years)
     }
     catch (error) {
         next(error)
@@ -126,7 +127,7 @@ const updateYear = async (req, res, next) => {
 
 module.exports = {
     createYear,
-    getListOfYears,
+    getAllYears,
     getActiveYear,
     getYearByID,
     deleteYear,

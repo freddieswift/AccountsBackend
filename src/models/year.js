@@ -33,32 +33,41 @@ const yearSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    COSOHPerDozen: {
+    totalOI: {
+        type: Number,
+        default: 0
+    },
+    COSOHOIPerDozen: {
         type: Number,
         default: 0
     }
 })
 
-yearSchema.methods.calculateTotalCOSOH = async function () {
+yearSchema.methods.calculateTotalCOSOHOI = async function () {
     let totalCOS = 0
     let totalOH = 0
+    let totalOI = 0
     this.categories.forEach(category => {
         if (category.categoryType === 'COS') {
             totalCOS += category.value
         }
-        else {
+        else if (category.categoryType === 'OVERHEAD') {
             totalOH += category.value
+        }
+        else {
+            totalOI += category.value
         }
     });
 
     this.totalCOS = totalCOS
     this.totalOH = totalOH
+    this.totalOI = totalOI
 
     if (this.predictedDozens != 0) {
-        this.COSOHPerDozen = (this.totalCOS + this.totalOH) / this.predictedDozens
+        this.COSOHOIPerDozen = (this.totalCOS + this.totalOH - this.totalOI) / this.predictedDozens
     }
     else {
-        this.COSOHPerDozen = 0
+        this.COSOHOIPerDozen = 0
     }
 
     await this.save()

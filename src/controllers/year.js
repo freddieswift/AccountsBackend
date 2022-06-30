@@ -117,7 +117,7 @@ const updateYear = async (req, res, next) => {
             year[update] = req.body[update]
         })
         await year.save()
-        await year.calculateTotalCOSOH()
+        await year.calculateTotalCOSOHOI()
         res.send(year)
     }
     catch (error) {

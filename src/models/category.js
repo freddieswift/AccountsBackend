@@ -8,11 +8,11 @@ const categorySchema = new mongoose.Schema({
     categoryType: {
         type: String,
         required: true,
-        enum: ['COS', 'OVERHEAD', 'OI']
+        enum: ['COS', 'OH', 'OI']
     },
     value: {
         type: Number,
-        default: null
+        default: 0
     }
 })
 

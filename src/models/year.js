@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const categorySchema = require('../models/category')
+const { categorySchema } = require('../models/category')
 
 const yearSchema = new mongoose.Schema({
     name: {
@@ -51,7 +51,7 @@ yearSchema.methods.calculateTotalCOSOHOI = async function () {
         if (category.categoryType === 'COS') {
             totalCOS += category.value
         }
-        else if (category.categoryType === 'OVERHEAD') {
+        else if (category.categoryType === 'OH') {
             totalOH += category.value
         }
         else {

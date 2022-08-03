@@ -1,8 +1,12 @@
 const Year = require('../models/year')
+const { Category } = require('../models/category')
 const { generateCustomError } = require('../errors/customError')
 
 const createYear = async (req, res, next) => {
     const year = new Year(req.body)
+    const yarn = new Category({ name: 'Yarn', categoryType: 'COS' })
+    const dyeing = new Category({ name: 'Dyeing', categoryType: 'COS' })
+    year.categories.push(yarn, dyeing)
     year.accountId = req.account._id
     try {
         await year.save()
@@ -41,7 +45,8 @@ const getActiveYear = async (req, res, next) => {
             active: true
         })
         if (!year) {
-            return next(generateCustomError("No active year found", 404))
+            //return next(generateCustomError("No active year found", 404))
+            return res.send({})
         }
         res.send(year)
     }
